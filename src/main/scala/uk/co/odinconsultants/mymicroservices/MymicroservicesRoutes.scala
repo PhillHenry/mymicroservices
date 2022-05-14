@@ -25,6 +25,6 @@ object MymicroservicesRoutes:
       case GET -> Root / "hello" / name =>
         for {
           greeting <- H.hello(HelloWorld.Name(name))
-          resp <- Ok(greeting)
+          resp     <- Ok(greeting)
         } yield resp
     }
