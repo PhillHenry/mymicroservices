@@ -9,18 +9,14 @@ import cats.implicits._
 
 object GreetingClientMain extends IOApp.Simple:
   def run: IO[Unit] =
-    makeCall.as(ExitCode.Success)
+    makeCall[IO].as(ExitCode.Success)
 
-//  def makeCall[IO[_]: Async]: IO[Unit] =
-  def makeCall: IO[Unit] =
-    val stream: Stream[IO, Jokes.Joke] = for {
-      client <- Stream.resource(EmberClientBuilder.default[IO].build)
-      jokeAlg: Jokes[IO] = GreetingClient.impl[IO](client)
-      joke   <- Stream.eval(jokeAlg.get.flatMap(printAndReturn))
+  def makeCall[F[_]: Async]: F[Unit] =
+    val stream: Stream[F, Jokes.Joke] = for {
+      client <- Stream.resource(EmberClientBuilder.default[F].build)
+      jokeAlg: Jokes[F] = GreetingClient.impl[F](client)
+      joke   <- Stream.eval(jokeAlg.get.flatMap(x => {println(x); x}.pure)) // hmm, that's not pure...
     } yield {
       joke
     }
     stream.compile.drain
-
-  def printAndReturn[T](t: T): IO[T] =
-    IO.println(s"printAndReturn: $t") >> IO(t)
