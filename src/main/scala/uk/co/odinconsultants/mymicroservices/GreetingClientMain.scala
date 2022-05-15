@@ -11,10 +11,8 @@ import cats.implicits._
 object GreetingClientMain extends IOApp.Simple:
   def run: IO[Unit] =
     makeCall[IO].as(ExitCode.Success)
-    
-  def printing[T](t: T): _ => T = _ => t
 
-  def printAnReturn[F[_], T](t: T)(implicit F: Async[F]): F[T] = F.delay({
+  def printAnReturn[F[_], T](t: T)(implicit F: Sync[F]): F[T] = F.delay({
     println(t)
     t
   })
