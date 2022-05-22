@@ -15,8 +15,6 @@ object GreetingServer {
     for {
       client        <- Stream.resource(EmberClientBuilder.default[F].build)
       helloWorldAlg = HelloWorld.impl[F]
-      jokeAlg       = Jokes.impl[F](client)
-
       httpApp       = (
         MymicroservicesRoutes.helloWorldRoutes[F](helloWorldAlg)
 //          <+> MymicroservicesRoutes.jokeRoutes[F](jokeAlg)
