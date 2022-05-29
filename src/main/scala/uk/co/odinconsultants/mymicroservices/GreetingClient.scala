@@ -24,7 +24,7 @@ object Http4sHandler{
 }
 
 object GreetingClient {
-  def impl[F[_]: Concurrent](handler: Http4sHandler[F]): Jokes[F] = new Jokes[F]:
+  def impl[F[_]: Concurrent](handler: HttpHandler[F]): Jokes[F] = new Jokes[F]:
     val dsl = new Http4sClientDsl[F]{}
     import dsl._
     def get: F[Jokes.Joke] =
