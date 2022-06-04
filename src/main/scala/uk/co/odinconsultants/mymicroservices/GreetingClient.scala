@@ -13,14 +13,16 @@ trait HttpHandler[F[_]] {
   def callHttp(req: Request[F]): F[Jokes.Joke]
 }
 
-class Http4sHandler[F[_]: Concurrent](C: Client[F], d: EntityDecoder[F, Jokes.Joke]) extends HttpHandler[F] {
-  def callHttp(req: Request[F]): F[Jokes.Joke] = {
-    C.expect[Joke](req)(d) 
-  }
+class Http4sHandler[F[_]: Concurrent](client: Client[F],
+                                      decoder: EntityDecoder[F, Jokes.Joke]) extends HttpHandler[F] {
+
+  def callHttp(req: Request[F]): F[Jokes.Joke] = client.expect[Joke](req)(decoder)
+
 }
 
-object Http4sHandler{
-  def apply[F[_]: Concurrent](C: Client[F])(implicit d: EntityDecoder[F, Jokes.Joke]): Http4sHandler[F] = new Http4sHandler(C, d)
+object Http4sHandler {
+  def apply[F[_]: Concurrent](client: Client[F])
+                             (implicit decoder: EntityDecoder[F, Jokes.Joke]): Http4sHandler[F] = new Http4sHandler(client, decoder)
 }
 
 object GreetingClient {

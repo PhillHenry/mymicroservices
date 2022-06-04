@@ -27,7 +27,5 @@ class GreetingsClientSpec extends CatsEffectSuite {
     interceptIO[JokeError](handle(badHandler))
   }
 
-  def handle(handler: HttpHandler[IO]): IO[Jokes.Joke] = {
-    GreetingClient.impl[IO](handler).get
-  }
+  def handle(handler: HttpHandler[IO]): IO[Jokes.Joke] = GreetingClient.impl[IO](handler).get
 }
