@@ -16,10 +16,9 @@ object GreetingServerMain extends IOApp{
   def run(args: List[String]): IO[ExitCode] = {
     args.headOption.map { port =>
       startServer(port)
-    }.getOrElse(IO {
-      println(s"Could not start server with arguments: ${args.mkString(", ")}")
-      ExitCode.Error
-    })
+    }.getOrElse(
+      IO.raiseError(new Throwable(s"Could not start server with arguments: ${args.mkString(", ")}")
+    ).as(ExitCode.Error))
   }
 
 }
