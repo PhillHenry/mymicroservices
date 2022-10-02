@@ -9,6 +9,7 @@ lazy val root = (project in file("."))
     name := "mymicroservices",
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "3.1.0",
+    scalafmtOnCompile := false,
     libraryDependencies ++= Seq(
       "org.http4s"      %% "http4s-ember-server" % Http4sVersion,
       "org.http4s"      %% "http4s-ember-client" % Http4sVersion,
