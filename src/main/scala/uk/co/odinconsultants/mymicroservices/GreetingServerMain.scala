@@ -9,7 +9,9 @@ object GreetingServerMain extends IOApp{
   def startServer(port: String): IO[ExitCode] =
     Port.fromString(port).map { port =>
       GreetingServer.stream[IO](port).compile.drain.map(_ => ExitCode.Success)
-    }.getOrElse(IO {println(s"Could not start server on port $port")}.as(ExitCode.Error))
+    }.getOrElse(
+      IO.raiseError(new Throwable(s"Could not start server on port $port")
+      ).as(ExitCode.Error))
 
   def run(args: List[String]): IO[ExitCode] = {
     args.headOption.map { port =>
