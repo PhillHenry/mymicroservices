@@ -13,21 +13,13 @@ object GreetingServer {
 
   def stream[F[_] : Async](port: Port): Stream[F, Nothing] = {
     for {
-      client        <- Stream.resource(EmberClientBuilder.default[F].build)
-      helloWorldAlg = HelloWorld.impl[F]
-      httpApp       = (
-        MymicroservicesRoutes.helloWorldRoutes[F](helloWorldAlg)
-//          <+> MymicroservicesRoutes.jokeRoutes[F](jokeAlg)
-        ).orNotFound
-
-      // With Middlewares in place
-      finalHttpApp  = Logger.httpApp(true, true)(httpApp)
-
       exitCode      <- Stream.resource(
         EmberServerBuilder.default[F]
           .withHost(ipv4"0.0.0.0")
           .withPort(port)
-          .withHttpApp(finalHttpApp)
+          .withHttpApp(Logger.httpApp(true, true)(
+            MymicroservicesRoutes.helloWorldRoutes[F](HelloWorld.impl[F]).orNotFound)
+          )
           .build >>
           Resource.eval(Async[F].never)
       )
